@@ -42,6 +42,8 @@
 #include <linux/io.h>
 #include <linux/acpi.h>
 
+#undef CONFIG_DMA_ENGINE
+
 #define UART_NR			14
 
 #define SERIAL_AMBA_MAJOR	204
@@ -1404,16 +1406,7 @@ __acquires(&uap->port.lock)
 			uap->im |= UART011_RXIM;
 			pl011_write(uap->im, uap, REG_IMSC);
 		} else {
-#ifdef CONFIG_DMA_ENGINE
-			/* Start Rx DMA poll */
-			if (uap->dmarx.poll_rate) {
-				uap->dmarx.last_jiffies = jiffies;
-				uap->dmarx.last_residue	= PL011_DMA_BUFFER_SIZE;
-				mod_timer(&uap->dmarx.timer,
-					jiffies +
-					msecs_to_jiffies(uap->dmarx.poll_rate));
-			}
-#endif
+
 		}
 	}
 	spin_lock(&uap->port.lock);
@@ -1422,10 +1415,6 @@ __acquires(&uap->port.lock)
 static bool pl011_tx_char(struct uart_amba_port *uap, unsigned char c,
 			  bool from_irq)
 {
-	if (unlikely(!from_irq) &&
-	    pl011_read(uap, REG_FR) & UART01x_FR_TXFF)
-		return false; /* unable to transmit character */
-
 	pl011_write(c, uap, REG_DR);
 	uap->port.icount.tx++;
 
