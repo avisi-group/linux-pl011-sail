@@ -18,6 +18,18 @@ source "drivers/tty/serial/8250/Kconfig"
 
 comment "Non-8250 serial port support"
 
+
+config SERIAL_MSERIAL
+	tristate "MSERIAL serial port support"
+	select SERIAL_CORE
+	help
+	  This selects the butts.  If you have
+	  an Integrator/AP or Integrator/PP2 platform, or if you have a
+	  Cirrus Logic EP93xx CPU, say Y or M here.
+
+	  If unsure, say N.
+
+
 config SERIAL_AMBA_PL010
 	tristate "ARM AMBA PL010 serial port support"
 	depends on ARM_AMBA || COMPILE_TEST
@@ -606,8 +618,8 @@ config PDC_CONSOLE
 	bool "PDC software console support"
 	depends on PARISC && !SERIAL_MUX && VT
 	help
-	  Saying Y here will enable the software based PDC console to be 
-	  used as the system console.  This is useful for machines in 
+	  Saying Y here will enable the software based PDC console to be
+	  used as the system console.  This is useful for machines in
 	  which the hardware based console has not been written yet.  The
 	  following steps must be completed to use the PDC console:
 
@@ -786,7 +798,7 @@ config SERIAL_CPM
 	depends on CPM2 || CPM1 || (PPC32 && COMPILE_TEST)
 	select SERIAL_CORE
 	help
-	  This driver supports the SCC and SMC serial ports on Motorola 
+	  This driver supports the SCC and SMC serial ports on Motorola
 	  embedded PowerPC that contain a CPM1 (8xx) or CPM2 (8xxx)
 
 config SERIAL_CPM_CONSOLE
